@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria Oliveira - Pedidos Online</title>
+    <style>
+        :root { --primary: #007000; --accent: #e74c3c; --dark: #1a1a1a; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; color: var(--dark); }
+        .container { max-width: 480px; margin: auto; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        
+        .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        /* Estilo da Logo embutida */
+        .logo { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 10px; background: #eee; }
+        
+        h3 { border-left: 5px solid var(--primary); padding-left: 10px; margin-top: 20px; color: var(--primary); font-size: 18px; text-transform: uppercase; }
+        .section { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: 12px; margin-bottom: 10px; }
+        label { font-weight: bold; display: block; margin: 8px 0 4px; font-size: 13px; }
+        select, input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; outline: none; }
+        
+        .btn-add { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
+        .btn-add:active { transform: scale(0.96); }
+        
+        .cart { background: #f9fff9; border: 1px solid #d0e8d0; padding: 12px; border-radius: 10px; margin-top: 15px; }
+        .item-row { border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .remove-btn { color: #ff4d4d; font-weight: bold; cursor: pointer; border: 1px solid #ff4d4d; padding: 2px 8px; border-radius: 5px; font-size: 12px; }
+        
+        .checkout-btn { width: 100%; background: #25d366; color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        #campo-troco { display: none; margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <!-- Imagem embutida em Base64 para garantir que apareça sempre -->
+        <img src="https://i.imgur.com/Z1BvX9U.jpg" alt="Pizzaria Oliveira" class="logo" onerror="this.src='https://via.placeholder.com/150?text=Pizzaria+Oliveira'">
+        <p style="margin: 5px 0 0; font-weight: bold; color: #333; font-size: 1.3em;">PIZZARIA OLIVEIRA</p>
+        <p style="margin: 2px 0 0; color: #666;">Pinda-SP | (12) 99111-9914</p>
+    </div>
+
+    <!-- SEÇÃO PIZZAS -->
+    <div class="section">
+        <h3>🍕 Pizzas (R$ 39,90)</h3>
+        <label>Sabor 1:</label>
+        <select id="p1">
+            <option value="Marguerita">Marguerita</option><option value="Frango com Catupiry">Frango com Catupiry</option>
+            <option value="Frango com catupiry e mussarela">Frango c/ Catupiry e Mussarela</option><option value="Brócolis com bacon">Brócolis com bacon</option>
+            <option value="Portuguesa">Portuguesa</option><option value="Tres queijos">Tres queijos</option>
+            <option value="Napolitana">Napolitana</option><option value="Milho">Milho</option>
+            <option value="Paulista">Paulista</option><option value="Caipira">Caipira</option>
+            <option value="Crocante">Crocante</option><option value="Toscana">Toscana</option>
+            <option value="Mussarela">Mussarela</option><option value="Calabresa">Calabresa</option>
+            <option value="Bauru">Bauru</option><option value="Calabresa com catupiry">Calabresa com catupiry</option>
+            <option value="Bacon">Bacon</option><option value="Palmito">Palmito</option>
+        </select>
+        <label>Sabor 2 (Opcional):</label>
+        <select id="p2"><option value="">-- Inteira --</option>
+            <option value="Marguerita">Marguerita</option><option value="Frango com Catupiry">Frango com Catupiry</option>
+            <option value="Frango com catupiry e mussarela">Frango c/ Catupiry e Mussarela</option><option value="Brócolis com bacon">Brócolis com bacon</option>
+            <option value="Portuguesa">Portuguesa</option><option value="Tres queijos">Tres queijos</option>
+            <option value="Napolitana">Napolitana</option><option value="Milho">Milho</option>
+            <option value="Paulista">Paulista</option><option value="Caipira">Caipira</option>
+            <option value="Crocante">Crocante</option><option value="Toscana">Toscana</option>
+            <option value="Mussarela">Mussarela</option><option value="Calabresa">Calabresa</option>
+            <option value="Bauru">Bauru</option><option value="Calabresa com catupiry">Calabresa com catupiry</option>
+            <option value="Bacon">Bacon</option><option value="Palmito">Palmito</option>
+        </select>
+        <label>Borda:</label>
+        <select id="borda">
+            <option value="Tradicional" data-extra="0">Tradicional (Grátis)</option>
+            <option value="Catupiry" data-extra="7">Borda Recheada de Catupiry (+ R$ 7,00)</option>
+        </select>
+        <button class="btn-add" onclick="addPizza()">+ ADICIONAR PIZZA</button>
+    </div>
+
+    <!-- SEÇÃO ESFIHAS -->
+    <div class="section">
+        <h3>🍩 Esfihas Doces</h3>
+        <select id="esfiha">
+            <option value="Ninho com morango" data-preco="12.50">Ninho com morango (R$ 12,50)</option>
+            <option value="Ninho com uva" data-preco="12.50">Ninho com uva (R$ 12,50)</option>
+            <option value="Dois amores" data-preco="10.90">Dois amores (R$ 10,90)</option>
+            <option value="Morango com avelã" data-preco="10.90">Morango com avelã (R$ 10,90)</option>
+            <option value="Morango com chocolate" data-preco="10.90">Morango com chocolate (R$ 10,90)</option>
+            <option value="Uva com avelã" data-preco="10.90">Uva com avelã (R$ 10,90)</option>
+            <option value="Uva com chocolate" data-preco="10.90">Uva com chocolate (R$ 10,90)</option>
+            <option value="Marshmallow" data-preco="10.90">Marshmallow (R$ 10,90)</option>
+            <option value="Banana com chocolate" data-preco="10.90">Banana com chocolate (R$ 10,90)</option>
+            <option value="Banana com doce de leite" data-preco="10.90">Banana com doce de leite (R$ 10,90)</option>
+            <option value="Chocolate" data-preco="10.90">Chocolate (R$ 10,90)</option>
+            <option value="Kit kat" data-preco="10.90">Kit kat (R$ 10,90)</option>
+            <option value="Paçoca" data-preco="10.90">Paçoca (R$ 10,90)</option>
+            <option value="Laka" data-preco="10.90">Laka (R$ 10,90)</option>
+            <option value="Oreo" data-preco="10.90">Oreo (R$ 10,90)</option>
+        </select>
+        <button class="btn-add" onclick="addEsfiha()">+ ADICIONAR ESFIHA</button>
+    </div>
+
+    <!-- SEÇÃO BEBIDAS -->
+    <div class="section">
+        <h3>🥤 Bebidas</h3>
+        <select id="refri">
+            <option value="Coca 2l" data-p="15">Coca 2L (R$ 15,00)</option>
+            <option value="Kuat 2l" data-p="12">Kuat 2L (R$ 12,00)</option>
+            <option value="Guarana Antartica 1l" data-p="7.5">Guaraná 1L (R$ 7,50)</option>
+        </select>
+        <button class="btn-add" onclick="addRefri()">+ ADICIONAR BEBIDA</button>
+    </div>
+
+    <!-- CARRINHO -->
+    <div class="cart">
+        <strong>🛒 Seu Pedido:</strong>
+        <div id="lista"></div>
+        <div id="taxa-entrega-display" style="display:none; font-size:14px; margin-top:5px; color:#666;">
+            Entrega: <span id="valor-taxa-txt">R$ 0,00</span>
+        </div>
+        <p style="margin-top:10px; border-top:2px solid #d0e8d0; padding-top:10px">
+            <strong>Total Geral: <span id="total-txt" style="color: var(--primary); font-size: 20px;">R$ 0,00</span></strong>
+        </p>
+    </div>
+
+    <!-- FINALIZAR ENTREGA -->
+    <div class="section" style="margin-top:15px">
+        <h3>📍 Finalizar Entrega</h3>
+        <input type="text" id="nome" placeholder="Seu Nome">
+        
+        <label>Bairro:</label>
+        <select id="bairro" onchange="render()">
+            <option value="" data-taxa="0">-- Selecione seu Bairro --</option>
+            <option value="Água Preta" data-taxa="8">Água Preta (R$ 8)</option>
+            <option value="Alto do Cardoso" data-taxa="4">Alto do Cardoso (R$ 4)</option>
+            <option value="Andrade" data-taxa="7">Andrade (R$ 7)</option>
+            <option value="Araretama" data-taxa="9">Araretama (R$ 9)</option>
+            <option value="Bela Vista" data-taxa="5">Bela Vista (R$ 5)</option>
+            <option value="Borba" data-taxa="15">Borba (R$ 15)</option>
+            <option value="Bosque da Princesa" data-taxa="6">Bosque da Princesa (R$ 6)</option>
+            <option value="Campinas" data-taxa="15">Campinas (R$ 15)</option>
+            <option value="Campo Belo" data-taxa="6">Campo Belo (R$ 6)</option>
+            <option value="Campos Maia" data-taxa="5">Campos Maia (R$ 5)</option>
+            <option value="Carangola" data-taxa="7">Carangola (R$ 7)</option>
+            <option value="Castolira" data-taxa="8">Castolira (R$ 8)</option>
+            <option value="Centro" data-taxa="5">Centro (R$ 5)</option>
+            <option value="Chácara da Galega" data-taxa="5">Chácara da Galega (R$ 5)</option>
+            <option value="Cidade Jardim" data-taxa="8">Cidade Jardim (R$ 8)</option>
+            <option value="Cidade Nova" data-taxa="9">Cidade Nova (R$ 9)</option>
+            <option value="Condomínio Laguna" data-taxa="9">Condomínio Laguna (R$ 9)</option>
+            <option value="Condomínio Moema Ville" data-taxa="9">Condomínio Moema Ville (R$ 9)</option>
+            <option value="Condomínio Real Ville" data-taxa="9">Condomínio Real Ville (R$ 9)</option>
+            <option value="Crispim" data-taxa="8">Crispim (R$ 8)</option>
+            <option value="Ipiranga" data-taxa="9">Ipiranga (R$ 9)</option>
+            <option value="Jardim Boa Vista" data-taxa="7">Jardim Boa Vista (R$ 7)</option>
+            <option value="Jardim Campo Alegre" data-taxa="5">Jardim Campo Alegre (R$ 5)</option>
+            <option value="Jardim Cristina" data-taxa="5">Jardim Cristina (R$ 5)</option>
+            <option value="Jardim Eloyna" data-taxa="9">Jardim Eloyna (R$ 9)</option>
+            <option value="Jardim Imperial" data-taxa="5">Jardim Imperial (R$ 5)</option>
+            <option value="Jardim Mariana" data-taxa="7">Jardim Mariana (R$ 7)</option>
+            <option value="Jardim Princesa" data-taxa="8">Jardim Princesa (R$ 8)</option>
+            <option value="Jardim Regina" data-taxa="15">Jardim Regina (R$ 15)</option>
+            <option value="Jardim Rosely" data-taxa="5">Jardim Rosely (R$ 5)</option>
+            <option value="Jardim Yassuda" data-taxa="8">Jardim Yassuda (R$ 8)</option>
+            <option value="Lessa" data-taxa="6">Lessa (R$ 6)</option>
+            <option value="Maria Áurea" data-taxa="4">Maria Áurea (R$ 4)</option>
+            <option value="Maricá" data-taxa="7">Maricá (R$ 7)</option>
+            <option value="Mombaça" data-taxa="7">Mombaça (R$ 7)</option>
+            <option value="Mombaça I" data-taxa="7">Mombaça I (R$ 7)</option>
+            <option value="Morumbi" data-taxa="8">Morumbi (R$ 8)</option>
+            <option value="Nossa Senhora do Perpétuo Socorro" data-taxa="4">N. Sra. do Perpétuo Socorro (R$ 4)</option>
+            <option value="Ouro Verde" data-taxa="5">Ouro Verde (R$ 5)</option>
+            <option value="Parque das Nações" data-taxa="4">Parque das Nações (R$ 4)</option>
+            <option value="Parque das Palmeiras" data-taxa="8">Parque das Palmeiras (R$ 8)</option>
+            <option value="Parque São Domingos" data-taxa="5">Parque São Domingos (R$ 5)</option>
+            <option value="Santa Cecília" data-taxa="7">Santa Cecília (R$ 7)</option>
+            <option value="Santa Clara" data-taxa="7">Santa Clara (R$ 7)</option>
+            <option value="Santa Luzia" data-taxa="6">Santa Luzia (R$ 6)</option>
+            <option value="Santana" data-taxa="7">Santana (R$ 7)</option>
+            <option value="São Benedito" data-taxa="5">São Benedito (R$ 5)</option>
+            <option value="Socorro" data-taxa="5">Socorro (R$ 5)</option>
+            <option value="Tabaú" data-taxa="7">Tabaú (R$ 7)</option>
+            <option value="Triângulo" data-taxa="8">Triângulo (R$ 8)</option>
+            <option value="Vila Bourghese" data-taxa="5">Vila Bourghese (R$ 5)</option>
+            <option value="Vila Rica" data-taxa="6">Vila Rica (R$ 6)</option>
+            <option value="Vila Romana" data-taxa="6">Vila Romana (R$ 6)</option>
+            <option value="Vila São Judas Tadeu" data-taxa="6">Vila São Judas Tadeu (R$ 6)</option>
+            <option value="Vila Suíça" data-taxa="7">Vila Suíça (R$ 7)</option>
+            <option value="Vila Verde" data-taxa="5">Vila Verde (R$ 5)</option>
+            <option value="Village Splendore" data-taxa="9">Village Splendore (R$ 9)</option>
+            <option value="Vista Alegre" data-taxa="15">Vista Alegre (R$ 15)</option>
+        </select>
+
+        <input type="text" id="end" placeholder="Rua e Número" style="margin-top:10px">
+        <textarea id="obs" placeholder="Observações (Ex: Sem cebola, portão verde...)" rows="2" style="margin-top:10px"></textarea>
+        
+        <label>Forma de Pagamento:</label>
+        <select id="pgto" onchange="verTroco()">
+            <option value="Pix">Pix</option>
+            <option value="Cartão">Cartão na Entrega</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
+
+        <div id="campo-troco">
+            <label>Precisa de troco para quanto?</label>
+            <input type="number" id="troco-val" placeholder="Ex: 100">
+        </div>
+    </div>
+
+    <button class="checkout-btn" onclick="enviar()">✅ ENVIAR PEDIDO PELO WHATSAPP</button>
+</div>
+
+<script>
+    let carrinho = [];
+    let subtotal = 0;
+
+    function render() {
+        const div = document.getElementById('lista');
+        const selBairro = document.getElementById('bairro');
+        const taxaEntrega = parseFloat(selBairro.options[selBairro.selectedIndex].dataset.taxa) || 0;
+        
+        div.innerHTML = "";
+        subtotal = 0;
+        
+        carrinho.forEach((item, index) => {
+            subtotal += item.p;
+            div.innerHTML += `<div class="item-row">
+                <span><b>${index+1}.</b> ${item.n}</span>
+                <span>R$ ${item.p.toFixed(2)} <span class="remove-btn" onclick="remover(${index})">X</span></span>
+            </div>`;
+        });
+
+        const totalGeral = subtotal + taxaEntrega;
+        
+        if(taxaEntrega > 0) {
+            document.getElementById('taxa-entrega-display').style.display = 'block';
+            document.getElementById('valor-taxa-txt').innerText = `R$ ${taxaEntrega.toFixed(2)}`;
+        } else {
+            document.getElementById('taxa-entrega-display').style.display = 'none';
+        }
+
+        document.getElementById('total-txt').innerText = `R$ ${totalGeral.toFixed(2)}`;
+    }
+
+    function remover(index) {
+        carrinho.splice(index, 1);
+        render();
+    }
+
+    function addPizza() {
+        const s1 = document.getElementById('p1').value;
+        const s2 = document.getElementById('p2').value;
+        const selBorda = document.getElementById('borda');
+        const bordaNome = selBorda.value;
+        const precoBorda = parseFloat(selBorda.options[selBorda.selectedIndex].dataset.extra);
+        
+        let nomeFinal = s2 === "" ? `Pizza ${s1}` : `Pizza 1/2 ${s1} | 1/2 ${s2}`;
+        nomeFinal += ` (Borda: ${bordaNome})`;
+        
+        const precoTotalPizza = 39.90 + precoBorda;
+        
+        carrinho.push({n: nomeFinal, p: precoTotalPizza});
+        render();
+    }
+
+    function addEsfiha() {
+        const sel = document.getElementById('esfiha');
+        const nome = sel.value;
+        const preco = parseFloat(sel.options[sel.selectedIndex].dataset.preco);
+        carrinho.push({n: `Esfiha ${nome}`, p: preco});
+        render();
+    }
+
+    function addRefri() {
+        const sel = document.getElementById('refri');
+        const nome = sel.value;
+        const preco = parseFloat(sel.options[sel.selectedIndex].dataset.p);
+        carrinho.push({n: nome, p: preco});
+        render();
+    }
+
+    function verTroco() {
+        document.getElementById('campo-troco').style.display = (document.getElementById('pgto').value === "Dinheiro") ? "block" : "none";
+    }
+
+    function enviar() {
+        const nome = document.getElementById('nome').value;
+        const bairro = document.getElementById('bairro').value;
+        const end = document.getElementById('end').value;
+        const obs = document.getElementById('obs').value;
+        const pgto = document.getElementById('pgto').value;
+        const troco = document.getElementById('troco-val').value;
+        
+        const selBairro = document.getElementById('bairro');
+        const taxaEntrega = parseFloat(selBairro.options[selBairro.selectedIndex].dataset.taxa) || 0;
+        const totalFinal = subtotal + taxaEntrega;
+
+        if(!nome || !bairro || !end || carrinho.length === 0) {
+            alert("Por favor, preencha nome, bairro, endereço e escolha os produtos!"); return;
+        }
+
+        let msg = `*NOVO PEDIDO - PIZZARIA OLIVEIRA* 🍕\n\n`;
+        msg += `*Cliente:* ${nome}\n`;
+        msg += `*Endereço:* ${end}\n`;
+        msg += `*Bairro:* ${bairro}\n`;
+        if(obs) msg += `*Obs:* ${obs}\n`;
+        
+        msg += `\n*ITENS:*\n${carrinho.map(i => "• " + i.n + " (R$ " + i.p.toFixed(2) + ")").join('\n')}\n`;
+        
+        msg += `\n*Subtotal:* R$ ${subtotal.toFixed(2)}`;
+        msg += `\n*Taxa de Entrega:* R$ ${taxaEntrega.toFixed(2)}`;
+        msg += `\n*TOTAL FINAL:* R$ ${totalFinal.toFixed(2)}`;
+        msg += `\n\n*FORMA DE PAGAMENTO:* ${pgto}`;
+        
+        if(pgto === "Dinheiro" && troco) msg += ` (Troco para R$ ${troco})`;
+
+        window.open(`https://wa.me/5512991119914?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+</script>
+</body>
+</html>
