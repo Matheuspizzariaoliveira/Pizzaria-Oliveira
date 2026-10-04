@@ -280,7 +280,7 @@
         document.getElementById('campo-troco').style.display = (document.getElementById('pgto').value === "Dinheiro") ? "block" : "none";
     }
 
-    function enviar() {
+    async function enviar() {
         const nome = document.getElementById('nome').value;
         const bairro = document.getElementById('bairro').value;
         const end = document.getElementById('end').value;
