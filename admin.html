@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ativar notificações - Pizzaria Oliveira</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f3f3;padding:20px}
+.card{max-width:480px;margin:auto;background:#fff;padding:22px;border-radius:16px;box-shadow:0 5px 20px #0001}
+input,button{width:100%;box-sizing:border-box;padding:13px;margin-top:10px;border-radius:8px;border:1px solid #ddd}
+button{background:#087f23;color:#fff;font-weight:bold;border:0}
+#status{margin-top:15px;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>🔔 Pizzaria Oliveira</h2>
+<p>Use esta página somente no celular que deve receber os avisos de novos pedidos.</p>
+<input id="api" placeholder="URL do servidor de notificações">
+<input id="code" type="password" placeholder="Código de ativação">
+<button onclick="ativar()">ATIVAR NOTIFICAÇÕES</button>
+<div id="status"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAptJmAthi-D4Xc4onAXYiDezhXikOlNao",
+  authDomain: "pizzaria-oliveira-bd039.firebaseapp.com",
+  projectId: "pizzaria-oliveira-bd039",
+  storageBucket: "pizzaria-oliveira-bd039.firebasestorage.app",
+  messagingSenderId: "403232293352",
+  appId: "1:403232293352:web:8d469e7841cb9aa33b645d"
+};
+const FCM_VAPID_KEY = "BAfy3OylDpQwACoV8z97lrKwyYqDPUzgmJS342QeVpT1b-HV4p0GZD_OcuRyzXF5rQq3IHt_WtCULXjIluSPqmM";
+
+async function ativar(){
+  const status=document.getElementById("status");
+  const api=document.getElementById("api").value.trim().replace(/\/$/,"");
+  const code=document.getElementById("code").value;
+  if(!api||!code){status.textContent="Preencha os dois campos.";return;}
+  try{
+    const registration=await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+    await navigator.serviceWorker.ready;
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    const permission=await Notification.requestPermission();
+    if(permission!=="granted"){status.textContent="Permissão de notificação não concedida.";return;}
+    const messaging=firebase.messaging();
+    const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:registration});
+    const r=await fetch(api+"/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token,setupCode:code})});
+    const data=await r.json();
+    status.textContent=data.ok?"✅ Este celular receberá os novos pedidos.":"❌ "+(data.error||"Falha na ativação.");
+  }catch(e){
+    console.error(e);
+    status.textContent="❌ Não foi possível ativar. Confira a URL e o código.";
+  }
+}
+</script>
+</body>
+</html>
