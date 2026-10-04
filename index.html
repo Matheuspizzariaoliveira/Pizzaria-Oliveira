@@ -314,5 +314,66 @@
         window.open(`https://wa.me/5512991119914?text=${encodeURIComponent(msg)}`, '_blank');
     }
 </script>
+
+    <div id="notificacao-status" style="margin-top:12px;text-align:center;font-size:12px;color:#666;">
+        🔔 Notificações de novos pedidos: preparando...
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
+    <script>
+        const FIREBASE_CONFIG = {
+            apiKey: "COLOQUE_AQUI",
+            authDomain: "COLOQUE_AQUI",
+            projectId: "COLOQUE_AQUI",
+            storageBucket: "COLOQUE_AQUI",
+            messagingSenderId: "COLOQUE_AQUI",
+            appId: "COLOQUE_AQUI"
+        };
+        const FCM_VAPID_KEY = "COLOQUE_AQUI";
+
+        async function prepararNotificacoes() {
+            const status = document.getElementById("notificacao-status");
+            if (!("serviceWorker" in navigator) || !("Notification" in window)) {
+                status.textContent = "⚠️ Este navegador não suporta notificações Push.";
+                return;
+            }
+            try {
+                const registration = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+                await navigator.serviceWorker.ready;
+
+                if (FIREBASE_CONFIG.apiKey === "COLOQUE_AQUI" || FCM_VAPID_KEY === "COLOQUE_AQUI") {
+                    status.textContent = "🔔 Notificações: estrutura instalada. Falta conectar o Firebase.";
+                    return;
+                }
+
+                if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+                const messaging = firebase.messaging();
+                const permission = await Notification.requestPermission();
+
+                if (permission !== "granted") {
+                    status.textContent = "🔕 Notificações desativadas neste navegador.";
+                    return;
+                }
+
+                const token = await messaging.getToken({
+                    vapidKey: FCM_VAPID_KEY,
+                    serviceWorkerRegistration: registration
+                });
+
+                if (token) {
+                    localStorage.setItem("pizzaria_oliveira_fcm_token", token);
+                    status.textContent = "🔔 Notificações de novos pedidos ativadas!";
+                    console.log("FCM token registrado.");
+                }
+            } catch (erro) {
+                console.error("Falha ao preparar notificações:", erro);
+                status.textContent = "⚠️ Não foi possível ativar as notificações agora.";
+            }
+        }
+
+        prepararNotificacoes();
+    </script>
+
 </body>
 </html>
