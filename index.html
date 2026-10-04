@@ -311,6 +311,18 @@
         
         if(pgto === "Dinheiro" && troco) msg += ` (Troco para R$ ${troco})`;
 
+        if (NOTIFICATION_API_URL !== "COLOQUE_A_URL_DO_WORKER") {
+            try {
+                await fetch(NOTIFICATION_API_URL + "/order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cliente: nome, total: "R$ " + totalFinal.toFixed(2) })
+                });
+            } catch (erro) {
+                console.warn("Notificação não enviada:", erro);
+            }
+        }
+
         window.open(`https://wa.me/5512991119914?text=${encodeURIComponent(msg)}`, '_blank');
     }
 </script>
@@ -332,6 +344,7 @@
         "measurementId": "G-FNTGTS84FZ"
 };
         const FCM_VAPID_KEY = "BAfy3OylDpQwACoV8z97lrKwyYqDPUzgmJS342QeVpT1b-HV4p0GZD_OcuRyzXF5rQq3IHt_WtCULXjIluSPqmM";
+        const NOTIFICATION_API_URL = "COLOQUE_A_URL_DO_WORKER";
 
         async function prepararNotificacoes() {
             const status = document.getElementById("notificacao-status");
@@ -373,7 +386,7 @@
             }
         }
 
-        prepararNotificacoes();
+        // Ativação reservada ao celular da pizzaria pela página admin.html.
     </script>
 
 </body>
