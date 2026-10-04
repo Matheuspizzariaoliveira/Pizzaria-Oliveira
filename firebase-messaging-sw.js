@@ -6,12 +6,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js');
 
 const FIREBASE_CONFIG = {
-  apiKey: "COLOQUE_AQUI",
-  authDomain: "COLOQUE_AQUI",
-  projectId: "COLOQUE_AQUI",
-  storageBucket: "COLOQUE_AQUI",
-  messagingSenderId: "COLOQUE_AQUI",
-  appId: "COLOQUE_AQUI"
+  "apiKey": "AIzaSyAptJmAthi-D4Xc4onAXYiDezhXikOlNao",
+  "authDomain": "pizzaria-oliveira-bd039.firebaseapp.com",
+  "projectId": "pizzaria-oliveira-bd039",
+  "storageBucket": "pizzaria-oliveira-bd039.firebasestorage.app",
+  "messagingSenderId": "403232293352",
+  "appId": "1:403232293352:web:8d469e7841cb9aa33b645d"
 };
 
 if (FIREBASE_CONFIG.apiKey !== "COLOQUE_AQUI") {
